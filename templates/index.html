@@ -1,0 +1,239 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+<head>
+<style type="text/css">
+	@import "fcms.css";
+</style>
+<link rel="icon" href="/favicon.ico" type="image/ico">
+<link rel="shortcut icon" href="/favicon.ico">
+    <title>Flutterby&trade;!</title>
+<link rel="alternate" type="application/rss+xml" 
+    title="RSS" href="http://www.flutterby.com/main.rdf">
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="geo.country" content="USA">
+<meta name="geo.placename" content="Fairfax, California">
+<meta name="geo.position" content="37.988428;-122.582952;120">
+<meta name="ICBM" content="37.988428, -122.582952">
+<meta name="DC.title" content="Flutterby&trade;!"> 
+</head>
+
+
+<body class="flutterbybodystandard">
+
+<div id="banner">
+<h1>$fcmsweblog_title</h1>
+<p id="bannertagline">Short attention spans in a world full of flowers</p>
+
+<form action="/cgi/search.cgi">
+<p><a href="/archives/viewentry.cgi?unread=1">Next unread comment</a> |
+<a href="/archives/userinfo.cgi">User Account Info</a> |
+<a href="/archives/logout.cgi">Logout</a> |
+<a href="http://www.flutterby.com/mainlong.rdf"><img src="http://www.flutterby.com/adbanners/xml.gif" width="36" height="14" border="0" alt="Click here to see an XML representation of the content of this weblog."></a>
+<a href="/syndicated.html">XML/Palm/etc versions</a> |
+<a href="/long.html">Long version (with comments)</a> |
+<a href="/archives/">Weblog archives</a> |
+<a href="sitemap.html">Site Map</a> |
+<input type="text" name="search" /><input value="search" type="submit" name="go" /> | <a href="/archives/topics/">Browse Topics</a></p></form>
+</div>
+
+<div id="maincolumn" class="weblogentries">
+
+<flutterbyquery sql="select distinct truncate_to_day(articles.entered) AS thisentrydate from weblogentries, articles where weblogentries.article_id = articles.id AND articles.entered <= NOW() order by truncate_to_day(articles.entered) desc limit 10">
+<flutterbyrow>
+<flutterbyquery format="blogentry_text=>blogentry_texttype,blogentry_subject=>escapehtml,author_name=>escapehtml,month=>monthformat,day=>dayformat,dayofweek=>dayofweekformat"
+sql="
+SELECT 
+weblogentries.id AS blogentry_id,
+articles.text AS blogentry_text,
+articles.texttype AS blogentry_texttype,
+articles.title AS blogentry_subject,
+weblogentries.commentcount AS blogentry_commentcount,
+date_part('year',articles.entered) AS year,
+date_part('month',articles.entered) AS month,
+date_part('day',articles.entered) AS day,
+date_part('dow',articles.entered) AS dayofweek,
+users.id AS author_id,
+users.name AS author_name,
+CASE
+  WHEN (SELECT COUNT(weblogentrybacklinks.weblogentry_id) 
+  FROM weblogentrybacklinks, urls
+        WHERE urls.id=weblogentrybacklinks.url_id 
+	AND weblogentrybacklinks.weblogentry_id=weblogentries.id 
+        AND (urls.ignoreasreferrer IS NULL OR urls.ignoreasreferrer != 'Y')
+	GROUP BY weblogentrybacklinks.weblogentry_id 
+        ORDER BY weblogentrybacklinks.weblogentry_id LIMIT 1) > 0 THEN
+    'inbound links'
+  ELSE
+    ''
+  END
+AS backlinks,
+'escapehtml' AS escapehtml,
+'month' AS monthformat,
+'day' AS dayformat,
+'dayofweek' AS dayofweekformat
+FROM weblogentries,users,articles WHERE 
+ articles.author_id=users.id
+ AND weblogentries.article_id = articles.id
+ AND articles.entered &gt;= DATE '$thisentrydate'
+ AND articles.entered &lt;= DATE '$thisentrydate' + INTERVAL '1 day'
+ AND articles.entered <= NOW()
+ AND not weblogentries.ignorepost
+ ORDER BY weblogentries.id DESC">
+<div style="clear: both;">
+<h2>$dayofweek $month $day, $year</h2>
+</div>
+
+<flutterbyrow>
+<div class="weblogentry">
+ <div class="weblogentryheader"><h2 class="weblogentrytitle">$blogentry_subject</h2>
+   <a class="weblogentryarchivelink" href="/archives/user.cgi?id=$author_id">$author_name</a>
+   <a href="/archives/comments/$blogentry_id.html">comments ($blogentry_commentcount)</a>
+ </div>
+ <div class="weblogentrybody">$blogentry_text</div>
+</div>
+</flutterbyrow>
+</div>
+</flutterbyquery>
+</flutterbyrow>
+</flutterbyquery>
+</div>
+
+<div id="sidebar">
+<div class="recentComments">
+
+<flutterbyquery format="subject=>escapehtml"
+sql="
+SELECT weblogentries.id AS id,
+articles.title AS subject,
+weblogentries.commentcount AS commentcount,
+CASE
+  WHEN (SELECT COUNT(weblogentrybacklinks.weblogentry_id) 
+  FROM weblogentrybacklinks , urls
+        WHERE urls.id=weblogentrybacklinks.url_id 
+	AND weblogentrybacklinks.weblogentry_id=weblogentries.id 
+        AND (urls.ignoreasreferrer IS NULL OR urls.ignoreasreferrer != 'Y')
+	GROUP BY weblogentrybacklinks.weblogentry_id 
+        ORDER BY weblogentrybacklinks.weblogentry_id LIMIT 1) &gt; 0 THEN
+    ''
+  ELSE
+    ''
+  END
+AS backlinks,
+'escapehtml' AS escapehtml FROM weblogentries,articles
+WHERE weblogentries.commentcount > 0 
+AND weblogentries.article_id=articles.id
+AND NOT weblogentries.ignorepost
+
+ORDER BY latestcomment DESC LIMIT 20
+">
+<table>
+<tr><th colspan="3">
+<h2>Most Recent Comments</h2>
+
+<p><a href="/archives/viewentry.cgi?unread=1">Next Unread
+Comment</a><br><a
+href="news://www.flutterby.com/flutterby.weblogentries">Read as
+News</a></p>
+
+</th></tr>
+<flutterbyrow>
+<tr><td width="90%" align="right">$subject</td><td width="10%" align="right"><a href="/archives/comments/$id.html">$commentcount</a></td><td>$backlinks</td></tr>
+</flutterbyrow>
+</table>
+</flutterbyquery>
+
+
+<flutterbyquery format="title=>escapehtml, articletitle=>escapehtml"
+sql="
+SELECT feedentrylinks.entry_id AS entry_id,
+    feedentrylinks.title AS title,
+    feedentrylinks.entry_url AS entry_url,
+    articles.title AS articletitle,
+    'escapehtml' AS escapehtml
+FROM feedentrylinks, weblogentries,articles
+WHERE feedentrylinks.entry_id=weblogentries.id AND weblogentries.article_id = articles.id
+ORDER BY feedentrylinks.entered DESC LIMIT 10
+">
+<h2>Most Recent Inbound Links</h2>
+<ul>
+<flutterbyrow>
+<li><a href="$entry_url">$title</a> (<a href="/archives/comments/$entry_id.html">$articletitle</a>)
+</flutterbyrow>
+</ul>
+</flutterbyquery>
+
+
+</div>
+
+<!-- 
+<div>
+<script type="text/javascript" src="http://www.lijit.com/informers/wijits?type=pvs&username=Dan%20Lyke&js=1"></script><a style='color: #999' href='http://www.lijit.com' id='lijit_wijit_pvs_link'>Lijit Search</a>
+</div>
+-->
+
+<div class="communitySites">
+<flutterbyquery
+format="participant_name=>escapehtml"
+sql="SELECT
+author_id,
+MAX(articles.entered) AS last_article_entered,
+COALESCE(
+   CASE
+      WHEN weblog_url='http://' THEN null
+      WHEN weblog_url='http:///' THEN null
+      WHEN weblog_url='' THEN null
+      WHEN weblog_url IS NULL THEN null
+      WHEN substr(weblog_url,1,7) = 'http://' THEN weblog_url
+      ELSE 'http://'||weblog_url
+   END,
+   CASE
+      WHEN substr(homepage_url,1,7) = 'http://' THEN homepage_url
+      ELSE 'http://'||homepage_url
+   END) 
+AS participant_url,
+COALESCE(
+   CASE
+      WHEN weblog_name = '' THEN NULL
+      ELSE weblog_name
+   END,name) AS participant_name
+FROM users,articles,weblogcomments,weblogentries
+WHERE ((weblog_url <> '' and weblog_url <> 'http://') 
+   OR (homepage_url <> '' and homepage_url <> 'http://'))
+   AND articles.author_id=users.id AND weblogcomments.article_id=articles.id
+   AND weblogentries.id = weblogcomments.entry_id AND not weblogentries.ignorepost
+GROUP BY author_id,weblog_url,homepage_url, weblog_name,name
+ORDER BY max(articles.entered) DESC
+LIMIT 24">
+<h2>Links to<br>Participants</h2>
+<p>(update your <a href="/archives/userinfo.cgi">User Account Info</a> to show up here)</p>
+<ul>
+<flutterbyrow>
+<li><a rel="nofollow" href="$participant_url">$participant_name</a> <small>(<a href="/archives/user.cgi?id=$author_id">#</a>)</small>
+</flutterbyrow>
+</li>
+</ul>
+</flutterbyquery>
+</div>
+
+
+<div id="sitesdanreads">
+<h2>Unsolicited Advertising</h2>
+<ul>
+<li><a href="http://www.mamaskonacoffee.com/">Mama's Kona Coffee</a></li>
+<li>Rami  at <a href="http://www.myiphonerepair.com/">My iPhone Repair.com</a> resurrected my cracked screen wonderfull.</li>
+<li><a href="http://www.jadehunt.com/">Jade</a></li>
+<li><a href="http://www.kayakoutfitting.com/">Kayak Outiftting</a> is run by my old paddling buddy Eric.</li>
+<li><a href="http://www.amyskitchen.com/">Amy's Kitchen</a> organic vegetarian prepared foods</li>
+<li><a href="http://www.oregonburls.com/">Oregon Burls</a> damn they've got some gorgeous woods</li>
+</ul>
+<h3>Adult</h3>
+<ul>
+<li><a href="http://www.beautifulagony.com/feck_subaff/redirect.php?id=78f9a87e">Beautiful Agony</a></li>
+</ul>
+</div>
+
+<div class="footer">
+    <hr>
+    Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.
+</div>
+  </body>
+</html>

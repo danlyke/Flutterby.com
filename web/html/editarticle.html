@@ -1,0 +1,115 @@
+<html>
+<head>
+   <style type="text/css">
+	@import "/fcms.css";
+   </style>
+   <link rel="icon" href="/favicon.ico" type="image/ico">
+   <link rel="shortcut icon" href="/favicon.ico">
+
+<link rel="icon" href="/favicon.ico" type="image/ico">
+<link rel="shortcut icon" href="/favicon.ico">
+<title>
+$fcmsweblog_title: Edit Article
+</title>
+</head>
+
+<body class="flutterbybodystandard">
+
+<div id="subpagebanner">
+<h1><a href="/">$fcmsweblog_title</a>: Edit Article</h1>
+
+
+<form action="/cgi/search.cgi">
+<p><a href="/archives/viewentry.cgi?unread=1">Next unread comment</a> / 
+<a href="/archives/viewentry.cgi?unread=catchup">Catchup all unread comments</a></strong>
+<a href="/archives/userinfo.cgi">User Account Info</a> |
+<a href="/archives/logout.cgi">Logout</a> |
+<a href="/syndicated.html">XML/Pilot/etc versions</a> |
+<a href="/long.html">Long version (with comments)</a> |
+<a href="/archives/">Weblog archives</a> |
+<a href="sitemap.html">Site Map</a> |
+<input type="text" name="search" /><input value="search" type="submit" name="go" /> | <a href="/archives/topics/">Browse Topics</a></p></form>
+</div>
+<flutterbyquery format="displaytext=>texttype,text=>escapehtml,name=>escapehtml" sql="
+SELECT
+ articles.id AS article_id,
+ articles.entered AS entered, 
+ articles.text AS text,
+ articles.text AS displaytext,
+ articles.texttype AS texttype,
+ articles.title AS title,
+ articles.author_id AS author_id,
+ users.name AS name,
+ 'escapehtml' AS escapehtml
+FROM users, articles WHERE (users.id=articles.author_id and ($queryterms))
+ORDER BY entered DESC">
+
+<flutterbyrow>
+
+<h1>$title</h1>
+<p><b>$id $entered</b> by 
+<a href="./user.cgi?id=$author_id">$name</a> 
+comments <a href="./viewentry.cgi?id=$article_id">$commentcount</a> $deletearticle  $deleted</p>
+$displaytext
+
+<form style="margin-left: 0;" method="post" action="./editarticle.cgi">
+<input type="hidden" name="_publish_id" value="$article_id">
+<input type="hidden" name="_article_id" value="$article_id">
+<input type="hidden" name="id" value="$article_id">
+<p><b>Entry #</b>$article_id <b>Made By:</b> $name
+<br>Title:
+<br><input type="text" name="_title" value="$title" size="80"><br>
+<p><textarea name="_text" rows="$textentryrows" cols="$textentrycols" wrap="physical">$text</textarea>
+</p>
+Format with: <select name="_texttype">
+<flutterbyquery sql="SELECT id AS texttype_id, name AS texttype_name FROM texttypes">
+<flutterbyrow><option value="$texttype_id">$texttype_name</option></flutterbyrow>
+</flutterbyquery>
+</select>
+
+<input type="submit" name="_updateentry" value="Update Entry"></p></form>
+
+<flutterbyquery sql="SELECT entry_id FROM articletoentries WHERE article_id=$article_id">
+<flutterbyrow>
+<p><a href="./editentry.cgi?id=$entry_id">edit the front page entry associated with this article</a></p>
+</flutterbyrow>
+</flutterbyquery>
+
+
+<flutterbyquery sql="
+SELECT articles.id AS xxxxx FROM articles 
+  WHERE timespublished=0 AND id=$article_id">
+<flutterbyrow>
+<form method="post" action="./newentry.cgi">
+<p>
+<h2>This doesn't get rendered 'til you publish it</h2>
+<input type="hidden" name="_publish_id" value="$article_id">
+<input type="hidden" name="_publish_title" value="$title">
+Type: <select name="_publishcategory_id">
+<flutterbyquery sql="SELECT id AS category_id, name as category_category 
+FROM articlecategories ORDER BY id">
+<flutterbyrow><option value="$category_id">$category_category</option></flutterbyrow>
+</flutterbyquery>
+</select>
+<input type="submit" name="_publishentry" value="Publish">
+</p>
+</form>
+</flutterbyrow>
+</flutterbyquery>
+
+</flutterbyrow>
+</flutterbyquery>
+
+
+<hr>
+<p>Connectivity provided by <a href="http://www.highertech.net/">highertech.net</a>
+, awesome
+bandwidth, well away from fault lines and other potential for natural
+disasters, reliable, and run by cool people.</p>
+
+<p>Questions, comments, flames: contact <a href="mailto:webmaster@flutterby.com">Dan Lyke</a>
+</p>
+
+<p>Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.</p>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+<style type="text/css">
+	@import "/fcms.css"; /* just some basic formatting, no layout stuff */
+</style>
+<link rel="icon" href="/favicon.ico" type="image/ico">
+<link rel="shortcut icon" href="/favicon.ico">
+    <title>$fcmsweblog_title Archives</title>
+  </head>
+
+  <body>
+<div id="banner">
+    <h1>$fcmsweblog_title Archives</h1>
+<form action="/cgi/search.cgi">
+<p><a href="/archives/userinfo.cgi">User Account Info</a> |
+<a href="/archives/logout.cgi">Logout</a> |
+<a href="/syndicated.html">XML/Pilot/etc versions</a> |
+<a href="/long.html">Long version (with comments)</a> |
+<a href="/archives/">Weblog archives</a> |
+<a href="sitemap.html">Site Map</a> |
+<input type="text" name="search" /><input value="search" type="submit" name="go" /> | <a href="/archives/topics/">Browse Topics</a></p></form>
+</div>
+
+
+<flutterbyquery format="month=>month"
+sql="
+SELECT DISTINCT SUBSTR(articles.entered::text,1,7) AS entered,
+  MIN(SUBSTR(articles.entered::text,1,10)) AS beginday,
+  MAX(SUBSTR(articles.entered::text,1,10)) AS endday,
+  SUBSTR(SUBSTR(articles.entered::text,1,7),6,2) AS month,
+  SUBSTR(SUBSTR(articles.entered::text,1,7),1,4) AS year,
+  COUNT(articles.id) AS count
+  FROM weblogentries, articles
+  WHERE weblogentries.article_id=articles.id GROUP BY SUBSTR(articles.entered::text,1,7)
+  ORDER BY SUBSTR(articles.entered::text,1,7) DESC
+">
+
+<ul>
+<flutterbyrow>
+<li><a href="/archives/viewentries.cgi?fromdate=$beginday&amp;todate=$endday">$month $year</a>, with $count entries</li>
+</flutterbyrow>
+</ul>
+</flutterbyquery>
+
+<h1>Old Archive Links</h1>
+
+<ul>
+<li>
+	 <a href="/archives/2000_Jan/index.html">January 2000</a>
+</li>  <li>
+	 <a href="/archives/1999_Dec/index.html">December 1999</a>
+</li> <li>
+	 <a href="/archives/1999_Nov/index.html">November 1999</a>
+</li> <li>
+	 <a href="/archives/1999_Oct/index.html">October 1999</a>
+</li> <li>
+	 <a href="/archives/1999_Sep/index.html">September 1999</a>
+</li> <li>
+	 <a href="/archives/1999_Aug/index.html">August 1999</a>
+</li> <li>
+	 <a href="/archives/1999_Jul/index.html">July 1999</a>
+</li> <li>
+	 <a href="/archives/1999_Jun/index.html">June 1999</a>
+</li> <li>
+	 <a href="/archives/1999_May/index.html">May 1999</a>
+</li> <li>
+	 <a href="/archives/1999_Apr/index.html">April 1999</a>
+</li> <li>
+	 <a href="/archives/1999_Mar/index.html">March 1999</a>
+</li> <li>
+	 <a href="/archives/1999_Feb/index.html">February 1999</a>
+</li> <li>
+	 <a href="/archives/1999_Jan/index.html">January 1999</a>
+</li> <li>
+	 <a href="/archives/1998_Dec/index.html">December 1998</a>
+</li> <li>
+	 <a href="/archives/1998_Nov/index.html">November 1998</a>
+</li> <li>
+	 <a href="/archives/1998_Oct/index.html">October 1998</a>
+</li> <li>
+	 <a href="/archives/1998_Sep/index.html">September 1998</a>
+</li> <li>
+	 <a href="/archives/1998_Aug/index.html">August 1998</a>
+</li> <li>
+	 <a href="/archives/1998_Jul/index.html">July 1998</a>
+</li> <li>
+	 <a href="/archives/1998_Jun/index.html">June 1998</a>
+</li> <li>
+	 <a href="/archives/1998_May/index.html">May 1998</a>
+</li> <li>
+	 <a href="/archives/1998_Apr/index.html">April 1998</a>
+</li> <li>
+	 <a href="/archives/1998_Mar/index.html">March 1998</a>
+</li> <li>
+	 <a href="/archives/1998_Feb/index.html">February 1998</a>
+</li>
+</ul>
+
+    <hr>
+    Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.
+<!-- Created: Tue Feb  3 15:36:53 PST 2004 -->
+<!-- hhmts start -->
+Last modified: Tue Feb  3 18:01:22 PST 2004
+<!-- hhmts end -->
+  </body>
+</html>

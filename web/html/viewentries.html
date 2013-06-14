@@ -1,0 +1,79 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+<head>
+   <style type="text/css">
+	@import "/fcms.css";
+   </style>
+   <link rel="icon" href="/favicon.ico" type="image/ico">
+   <link rel="shortcut icon" href="/favicon.ico">
+   <title>$fcmsweblog_title: $pagetitle</title>
+</head>
+<body class="flutterbybodystandard">
+
+<div id="subpagebanner">
+   <h1><a href="/">$fcmsweblog_title</a> $pagetitle
+   </h1>
+
+<form action="/cgi/search.cgi">
+<p><a href="/archives/viewentry.cgi?unread=1">Next unread comment</a> / 
+<a href="/archives/viewentry.cgi?unread=catchup">Catchup all unread comments</a></strong>
+<a href="/archives/userinfo.cgi">User Account Info</a> |
+<a href="/archives/logout.cgi">Logout</a> |
+<a href="/syndicated.html">XML/Pilot/etc versions</a> |
+<a href="/long.html">Long version (with comments)</a> |
+<a href="/archives/">Weblog archives</a> |
+<a href="sitemap.html">Site Map</a> |
+<input type="text" name="search" /><input value="search" type="submit" name="go" /> | <a href="/archives/topics/">Browse Topics</a></p></form>
+</div>
+
+<div id="" class="weblogentries">
+
+<flutterbyquery variable="blogentries">
+<flutterbyrow>
+<div style="clear: right">
+<!-- <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+<rdf:Description
+    rdf:about="http://www.flutterby.com/archives/comments/$blogentry_id.html"
+    dc:identifer="http://www.flutterby.com/archives/comments/$blogentry_id.html"
+    dc:title="Flutterby: $subject"
+    trackback:ping="http://www.flutterby.com/archives/comments/$blogentry_id.html" />
+</rdf:RDF> -->
+
+
+<div style="float: right; width:25%;"><h2>$subject</h2>
+<p>$entered by 
+<a href="/archives/user.cgi?id=$author_id">$name</a> /
+ <a href="/archives/comments/$blogentry_id.html">$commentcount comments</a> $editweblogentry $deleteweblogentry $deleted</p>
+</div>
+$text
+
+<flutterbyquery format="topic=>escapehtml" sql="
+SELECT topic, topic_id, 'escapehtml' AS escapehtml FROM articletopiclinks, articletopics WHERE articletopics.id=topic_id AND article_id=$article_id">
+<p><strong>[ related topics: 
+<flutterbyrow><a href="/archives/topics/$topic_id.html">$topic</a> </flutterbyrow>
+]</strong></p>
+</flutterbyquery>
+
+</flutterbyquery>
+
+</div>
+
+</flutterbyrow>
+</div>
+</flutterbyquery>
+</div></div>
+<hr>
+<p>Connectivity provided by <a href="http://www.highertech.net/">highertech.net</a>
+, awesome
+bandwidth, well away from fault lines and other potential for natural
+disasters, reliable, and run by cool people.</p>
+
+<p>Questions, comments, flames: contact <a href="mailto:webmaster@flutterby.com">Dan Lyke</a>
+</p>
+
+<p>Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.</p>
+
+</body>
+</html>
+

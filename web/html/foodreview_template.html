@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+
+<flutterbyquery format="article_text=>article_texttype,article_subject=>escapehtml,author_name=>escapehtml,month=>monthformat,day=>dayformat,dayofweek=>dayofweekformat"
+sql="
+SELECT 
+articles.id AS article_id,
+articles.text AS article_text,
+articles.texttype AS article_texttype,
+articles.title AS article_title,
+date_part('year',articles.entered) AS year,
+date_part('month',articles.entered) AS month,
+date_part('day',articles.entered) AS day,
+date_part('dow',articles.entered) AS dayofweek,
+users.id AS author_id,
+users.name AS author_name,
+'escapehtml' AS escapehtml,
+'month' AS monthformat,
+'day' AS dayformat,
+'dayofweek' AS dayofweekformat
+FROM articles,users WHERE 
+ articles.author_id=users.id
+ AND articles.id IN ($article_ids)">
+
+<flutterbyrow>
+
+  <head>
+   <style type="text/css">
+	@import "/fcms.css";
+   </style>
+   <link rel="icon" href="/favicon.ico" type="image/ico">
+   <link rel="shortcut icon" href="/favicon.ico">
+
+<link rel="icon" href="/favicon.ico" type="image/ico">
+<link rel="shortcut icon" href="/favicon.ico">
+    <title>$article_title</title>
+  </head>
+
+  <body>
+    <h1>$article_title</h1>
+
+<div align="right">
+<p><a href="/archives/user.cgi?id=$author_id">$author_name</a>,
+$dayofweek $month $day, $year</p>
+</div>
+
+<div class="entry">$article_text</div>
+
+    <hr>
+<p>Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.</p>
+  </body>
+</flutterbyrow>
+</flutterbyquery>
+</html>

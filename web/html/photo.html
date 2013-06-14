@@ -1,0 +1,104 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+<head>
+  <head>
+   <style type="text/css">
+	@import "/fcms.css";
+   </style>
+   <link rel="icon" href="/favicon.ico" type="image/ico">
+   <link rel="shortcut icon" href="/favicon.ico">
+
+<title>
+Flutterby: Images
+</title>
+</head>
+
+<body class="flutterbybodystandard">
+
+<div id="subpagebanner">
+<h1><a href="/">$fcmsweblog_title</a>: Images</h1>
+<form action="/cgi/search.cgi">
+<p><a href="/archives/viewentry.cgi?unread=1">Next unread comment</a> / 
+<a href="/archives/viewentry.cgi?unread=catchup">Catchup all unread comments</a></strong>
+<a href="/archives/userinfo.cgi">User Account Info</a> |
+<a href="/archives/logout.cgi">Logout</a> |
+<a href="/syndicated.html">XML/Pilot/etc versions</a> |
+<a href="/long.html">Long version (with comments)</a> |
+<a href="/archives/">Weblog archives</a> |
+<a href="sitemap.html">Site Map</a> |
+<input type="text" name="search" /><input value="search" type="submit" name="go" /> | <a href="/archives/topics/">Browse Topics</a></p></form>
+</div>
+
+<flutterbyquery format="alt_text=>escapehtml,text=>texttype" sql="
+SELECT
+ photos.id AS id,
+ photos.taken AS taken,
+ people.user_id AS photographer_id,
+ people.name AS photographer_name,
+ photos.model_release AS model_release,
+ modelrelease.description AS model_release_description,
+ modelrelease.file AS model_release_file,
+ photos.tech_notes AS tech_notes,
+ '['||articles.title||']' AS alt_text,
+ articles.text AS text,
+ articles.texttype AS texttype,
+ photos.directory AS directory,
+ 'escapehtml' AS escapehtml
+FROM people, modelrelease,photos,articles WHERE (articles.id=photos.article_id AND people.id=photos.photographer_id 
+ AND modelrelease.id=photos.model_release AND photos.show_on_browse != 'N' AND ($queryterms))
+AND articles.id=photos.article_id
+ORDER BY id">
+<flutterbyrow>
+
+<flutterbyquery sql="
+SELECT
+  photosizes.filename AS filename,
+  photosizes.width AS width,
+  photosizes.height AS height
+FROM photosizes WHERE id=
+  COALESCE (
+   (SELECT photosizes.id FROM photosizes WHERE photosizes.photo_id=$id
+     ORDER BY photosizes.width LIMIT 1 OFFSET $sizeimagetoshow ),
+   (SELECT photosizes.id FROM photosizes WHERE photosizes.photo_id=$id
+     ORDER BY photosizes.width LIMIT 1))">
+<flutterbyrow>
+<img src="/images/$directory/$filename" width="$width" height="$height" alt="$alt_text" align="left">
+<strong>Taken:</strong> $taken
+<br><strong>Photographer:</strong>
+   <a href="/archives/user.cgi?id=$photographer_id">$photographer_name</a>
+<br><strong>Model Release:</strong>
+   <a href="/images/release/$model_release_file">$model_release_description</a>
+<br><strong>Tech Notes:</strong> $tech_notes
+<br><strong>Description:</strong>
+<p> $text</p>
+<br clear="left">
+
+<p><small><strong>To include this image in a Flutterby web page:</strong>
+&lt;a href="/archives/photo.cgi?id=$id"&gt;&lt;img src="/images/$directory/$filename" width="$width" height="$height" alt="$alt_text" align="left"&gt;&lt;/a&gt;</small></p>
+</flutterbyrow>
+</flutterbyquery>
+
+<strong>Sizes: </strong>
+<flutterbyquery sql="
+SELECT
+  photosizes.width AS width,
+  photosizes.height AS height
+FROM photosizes WHERE photosizes.photo_id=$id ORDER BY photosizes.width">
+<flutterbyrow>
+<a href="/archives/photo.cgi?id=$id&amp;size=$_result_row">$width&nbsp;x&nbsp;$height</a>
+</flutterbyrow>
+</flutterbyquery>
+<hr>
+</flutterbyrow>
+</flutterbyquery>
+
+<p>Connectivity provided by <a href="http://www.highertech.net/">highertech.net</a>
+, awesome
+bandwidth, well away from fault lines and other potential for natural
+disasters, reliable, and run by cool people.</p>
+
+<p>Questions, comments, flames: contact <a href="mailto:webmaster@flutterby.com">Dan Lyke</a>
+</p>
+<p>Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.</p>
+
+</body>
+</html>

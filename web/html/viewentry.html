@@ -1,0 +1,199 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+<head>
+   <style type="text/css">
+	@import "/fcms.css";
+   </style>
+   <link rel="icon" href="/favicon.ico" type="image/ico">
+   <link rel="shortcut icon" href="/favicon.ico">
+   <title>$fcmsweblog_title
+      <flutterbyquery variable="blogentries">
+      <flutterbyrow>: $subject $entered</flutterbyrow></flutterbyquery>
+   </title>
+</head>
+<body class="flutterbybodystandard">
+
+<div id="subpagebanner">
+   <h1><a href="/">$fcmsweblog_title</a>
+      <flutterbyquery variable="blogentries">
+      <flutterbyrow>: $subject</flutterbyrow></flutterbyquery>
+   </h1>
+
+<form action="/cgi/search.cgi">
+<p><a href="/archives/viewentry.cgi?unread=1">Next unread comment</a> / 
+<a href="/archives/viewentry.cgi?unread=catchup">Catchup all unread comments</a></strong>
+<a href="/archives/userinfo.cgi">User Account Info</a> |
+<a href="/archives/logout.cgi">Logout</a> |
+<a href="/syndicated.html">XML/Pilot/etc versions</a> |
+<a href="/long.html">Long version (with comments)</a> |
+<a href="/archives/">Weblog archives</a> |
+<a href="/sitemap.html">Site Map</a> |
+<input type="text" name="search" /><input value="search" type="submit" name="go" /> | <a href="/archives/topics/">Browse Topics</a></p></form>
+</div>
+
+<div class="weblogentries">
+
+<flutterbyquery variable="blogentries">
+<flutterbyrow>
+
+
+<flutterbyquery sql="SELECT text AS weblogadtext FROM weblogads,weblogentryads WHERE weblogads.id=weblogentryads.ad_id AND weblogentryads.weblogentry_id=$blogentry_id AND weblogentryads.startdate <= NOW() AND weblogentryads.enddate >= NOW()">
+<div id="sponsoredads">
+<h3>Sponsored Ads</h3>
+<flutterbyrow>
+<p>$weblogadtext</p>
+</flutterbyrow>
+<hr>
+<p>We really like people who support Flutterby&trade;!</p>
+</div>
+</flutterbyquery>
+
+<div><h2>$subject</h2>
+<p><strong>$entered by 
+<a href="/archives/user.cgi?id=$author_id">$name</a> 
+ $commentcount comments $editweblogentry $deleteweblogentry $deleted</strong></p>
+</div>
+$text
+
+<flutterbyquery format="topic=>escapehtml" sql="
+SELECT topic, topic_id, 'escapehtml' AS escapehtml FROM articletopiclinks, articletopics WHERE articletopics.id=topic_id AND article_id=$blogentryarticle_id">
+<p><strong>[ related topics: 
+<flutterbyrow><a href="/archives/topics/$topic_id.html">$topic</a> </flutterbyrow>
+]</strong></p>
+</flutterbyquery>
+
+<flutterbyquery format="title=>escapehtml"
+sql="
+SELECT feedentrylinks.entry_id AS entry_id,
+    feedentrylinks.title AS title,
+    feedentrylinks.entry_url AS entry_url,
+    'escapehtml' AS escapehtml
+FROM feedentrylinks
+WHERE feedentrylinks.entry_id=$blogentry_id
+">
+<p><strong>Inbound links</strong></p>
+<ul>
+<flutterbyrow>
+<li><a href="$entry_url">$title</a>
+</flutterbyrow>
+</ul>
+</flutterbyquery>
+
+
+<p><strong>comments in $blogcommentslabel chronological order (<a href="/archives/viewentry.cgi?id=$blogentry_id&desc=$blogcommentsdesc">reverse</a>):</strong></p>
+
+<flutterbyquery format="blogcomments_text=>blogcomments_texttype,blogcomments_name=>escapehtml" sql="
+SELECT
+ weblogcomments.id AS blogcomments_id, 
+ articles.id AS article_id,
+ articles.entered AS blogcomments_entered, 
+ articles.text AS blogcomments_text,
+ articles.title AS blogcomments_title,
+ 1 AS relequalsnofollow,
+ COALESCE(articles.texttype,'1') AS blogcomments_texttype,
+ articles.author_id AS blogcomments_author_id,
+ CASE
+   WHEN articles.author_id=$userinfo_id THEN
+    '[&lt;a href=&quot;/archives/editcomment.cgi?commentid='||articles.id||'&quot;&gt;edit&lt;/a&gt;]'
+   ELSE
+    '' 
+   END
+ AS editweblogcomment,
+ CASE
+   WHEN articles.hasrevisions='Y' THEN
+    '[&lt;a href=&quot;/archives/commenthistory.cgi?id='||weblogcomments.id||'&quot;&gt;edit history&lt;/a&gt;]'
+   ELSE
+    '' 
+   END
+ AS viewweblogcommenthistory
+FROM weblogcomments,articles WHERE (articles.id=weblogcomments.article_id and weblogcomments.entry_id=$blogentry_id)
+ORDER BY weblogcomments.id $blogcommentsorder">
+<flutterbyrow>
+<p><a name="artid_$article_id"></a><a href="#artid_$article_id">#</a><b>Comment</b> $blogcomments_title <b>made:</b> $blogcomments_entered <b>by:</b>
+
+<flutterbyquery format="blogcomments_name=>escapehtml" sql="
+SELECT users.name AS blogcomments_name FROM users WHERE id=CAST('0'||'$blogcomments_author_id' AS INTEGER)">
+<flutterbyrow><a href="/archives/user.cgi?id=$blogcomments_author_id">$blogcomments_name</a></flutterbyrow>
+</flutterbyquery>
+
+<flutterbyquery sql="SELECT CASE WHEN '$blogcomments_author_id' = '' THEN 'Unknown, from NNTP' ELSE '' END AS userunknown">
+<flutterbyrow>$userunknown</flutterbyrow>
+</flutterbyquery>
+
+ $editweblogcomment $viewweblogcommenthistory </p>
+$blogcomments_text
+</flutterbyrow>
+</flutterbyquery>
+
+</div>
+<flutterbyquery variable="allowcomments">
+<div id="addcomment">
+<h3>Add your own comment:</h3>
+
+<form style="margin-left: 0;" method="post" action="/archives/viewentry.cgi?id=$blogentry_id">
+<input type="hidden" name="id" value="$blogentry_id">
+<br><input type="text" name="_title" value="Re: $subject" size="80"><br>
+<textarea name="_text" rows="$textentryrows" cols="$textentrycols" wrap="physical">
+</textarea>
+<br>
+Format with: <select name="_texttype">
+<flutterbyquery sql="SELECT id AS texttype_id, name AS texttype_name FROM texttypes">
+<flutterbyrow><option value="$texttype_id">$texttype_name</option></flutterbyrow>
+</flutterbyquery>
+</select>
+<input type="submit" name="_comment" value="comment">
+
+<p>(You should probably use "Text" mode: URLs will be mostly
+recognized and linked, _underscore quoted_ text is looked up in a
+glossary, _underscore quoted_ (http://xyz.pdq) becomes a link, without
+the link in the parenthesis it becomes a &lt;cite&gt; tag. All
+&lt;cite&gt;ed text will point to the Flutterby knowledge base.
+Two enters (ie: a blank line) gets you a new paragraph, special
+treatment for paragraphs that are manually indented or start with "#"
+(as in "#include" or "#!/usr/bin/perl"), "/* " or ">" (as in a quoted
+message) or look like lists, or within a paragraph you can use a
+number of HTML tags:</p>
+
+<blockquote><p>p, img, br, hr, a, sub, sup, tt, i, b, h1, h2, h3,
+h4, h5, h6, cite, em, strong, code, samp, kbd, pre, blockquote, address,
+ol, dl, ul, dt, dd, li, dir, menu, table, tr, td, th</p></blockquote>
+
+</form>
+</div>
+</flutterbyquery>
+
+
+
+<h2>Comment policy</h2>
+<p>We will not edit your comments. However, we may delete your
+comments, or cause them to be hidden behind another link, if we feel
+they detract from the conversation. Commercial plugs are fine,
+<em>if</em> they are relevant to the conversation, and if you don't
+try to pretend to be a consumer. Annoying endorsements will be deleted
+if you're lucky, if you're not a whole bunch of people smarter and
+more articulate than you will ridicule you, and we <em>will</em> leave
+such ridicule in place.</p>
+</div>
+
+
+
+
+
+</flutterbyrow>
+</flutterbyquery>
+
+<hr>
+<p>Connectivity provided by <a href="http://www.highertech.net/">highertech.net</a>
+, awesome
+bandwidth, well away from fault lines and other potential for natural
+disasters, reliable, and run by cool people.</p>
+
+<p>Questions, comments, flames: contact <a href="mailto:webmaster@flutterby.com">Dan Lyke</a>
+</p>
+
+<p>
+Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.
+</p>
+
+</body>
+</html>
+

@@ -1,0 +1,167 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+<head>
+   <style type="text/css">
+	@import "/fcms.css";
+   </style>
+   <link rel="icon" href="/favicon.ico" type="image/ico">
+   <link rel="shortcut icon" href="/favicon.ico">
+   <title>$fcmsweblog_title: $wikiterm</title>
+</head>
+
+<body class="flutterbybodystandard">
+
+
+<div>
+<div id="subpagebanner">
+<h1><a href="/">$fcmsweblog_title</a>: $wikiterm</h1>
+
+<form action="/cgi/search.cgi">
+<p><a href="/archives/viewentry.cgi?unread=1">Next unread comment</a> / 
+<a href="/archives/viewentry.cgi?unread=catchup">Catchup all unread comments</a></strong>
+<a href="/archives/userinfo.cgi">User Account Info</a> |
+<a href="/archives/logout.cgi">Logout</a> |
+<a href="/syndicated.html">XML/Pilot/etc versions</a> |
+<a href="/long.html">Long version (with comments)</a> |
+<a href="/archives/">Weblog archives</a> |
+<a href="sitemap.html">Site Map</a> |
+<input type="text" name="search" /><input value="search" type="submit" name="go" /> | <a href="/archives/topics/">Browse Topics</a></p></form>
+</div>
+
+
+<div id="wikiexplanation">
+<h2>What</h2>
+
+<p>This is my first attempt at trying to build a 
+<a href="http://c2.com/cgi/wiki">Wiki</a>-like knowledge base
+on top of the Flutterby content management system.</p>
+
+<p>This is a place for explanation, description and static links on a
+topic that's either too broad to be covered under a single link, or
+that you're just too lazy to find the real link to.</p>
+
+<p>Entries are automatically generated.</p>
+
+</div>
+
+
+
+<div id="">
+
+<flutterbyquery format="wikientries_title=>escapehtml,wikientries_text=>wikientries_texttype,wikientries_name=>escapehtml" sql="
+SELECT
+ wikientries.id AS wikientries_id, 
+ wikientries.displayorder AS wikientries_displayorder, 
+ articles.id AS article_id,
+ articles.entered AS wikientries_entered, 
+ articles.updated AS wikientries_updated, 
+ articles.text AS wikientries_text,
+ articles.title AS wikientries_title,
+ COALESCE(articles.texttype,'1') AS wikientries_texttype,
+ articles.author_id AS wikientries_author_id,
+ CASE
+   WHEN articles.author_id=$userinfo_id THEN
+    '[&lt;a href=&quot;/archives/editwiki.cgi?wikiid=$wikiid&amp;id='||articles.id||'&quot;&gt;edit&lt;/a&gt;]'
+   ELSE
+    '' 
+   END
+ AS editwikiarticle,
+ CASE
+   WHEN articles.hasrevisions='Y' THEN
+    '[&lt;a href=&quot;/archives/commenthistory.cgi?id='||articles.id||'&quot;&gt;edit history&lt;/a&gt;]'
+   ELSE
+    '' 
+   END
+ AS viewwikiarticlehistory,
+ users.name AS wikientries_name
+FROM users, wikientries,articles WHERE (users.id=articles.author_id AND articles.id=wikientries.article_id and wikientries.wiki_id=$wikiid)
+ORDER BY wikientries.displayorder">
+<flutterbyrow>
+<h2 class="wikientrytitle">$wikientries_title</h2>
+<div class="wikientryheader"><p class="wikientryheader"><b>by:</b><a href="/archives/user.cgi?id=$wikientries_author_id">$wikientries_name</a> $editwikiarticle $viewwikiarticlehistory <span style="font-size: xx-small;"><b>started:</b> $wikientries_entered <b>updated:</b> $wikientries_updated </span></p></div>
+
+$wikientries_text
+</flutterbyrow>
+</flutterbyquery>
+</div>
+</div>
+
+<div>
+<flutterbyquery sql="SELECT id,topic FROM articletopics WHERE upper(topic)=upper($sqlquotedwikiterm)">
+<flutterbyrow><h2>Entry Topic: <a href="/archives/topics/$id.html">$topic</a></h2>
+   <flutterbyquery format="article_title=>escapehtml" 
+   sql="SELECT
+            weblogentries.id AS entry_id, 
+	    COALESCE(articles.title, 'entry number '|| weblogentries.id) as article_title
+	FROM articles, articletopiclinks, weblogentries
+	WHERE weblogentries.article_id=articles.id AND articles.id=articletopiclinks.article_id AND articletopiclinks.topic_id=$id
+	ORDER BY weblogentries.id">
+   <ul>
+   <flutterbyrow><li> <a href="/archives/comments/$entry_id.html">$article_title ($entry_id)</a></li>
+</flutterbyrow>
+   </ul>
+   </flutterbquery>
+</flutterbyrow>
+</flutterbyquery>
+</div>
+<flutterbyquery sql="SELECT user_id FROM capabilities WHERE capabilities.weblog_id=$fcmsweblog_id AND capabilities.user_id=$userinfo_id AND (addwiki OR editwiki)">
+<flutterbyrow>
+<div>
+<form style="margin:0; padding: 0; border: 0;" method="post" action="/archives/wiki.cgi?wikiid=$wikiid">
+<h3>Add A Section About: $wikiterm</h3>
+<p>Note that you can use the radio buttons by each section heading to
+put this commentary in the middle, or leave it at the end: <input
+type="radio" name="_displayorder" value="-1"
+checked="true">. Editing existing comments is <em>strongly</em>
+encouraged. Links to stable outside resources as well. This part isn't
+meant to be about discussion but about information.</p>
+
+<p><b>Title:</b><br><input type="text" name="_title" value="" size="80"></p>
+
+<input type="hidden" name="id" value="$blogentry_id">
+<textarea name="_text" rows="$textentryrows" cols="$textentrycols" wrap="physical">
+</textarea>
+<br>
+Format with: <select name="_texttype">
+<flutterbyquery sql="SELECT id AS texttype_id, name AS texttype_name FROM texttypes">
+<flutterbyrow><option value="$texttype_id">$texttype_name</option></flutterbyrow>
+</flutterbyquery>
+</select>
+<input type="submit" name="_comment" value="comment">
+
+<p>(You should probably use "Text" mode: URLs will be mostly
+recognized and linked, _underscore quoted_ text is looked up in a
+glossary, _underscore quoted_ (http://xyz.pdq) becomes a link, without
+the link in the parenthesis it becomes a &lt;cite&gt; and link to the
+<a href="/archives/wiki.cgi?id=Flutterby+Knowledgebase">Flutterby
+Knowledgebase</a> definition.  Two enters (ie: a blank line) gets you
+a new paragraph, special treatment for paragraphs that are manually
+indented or start with "#" (as in "#include" or "#!/usr/bin/perl"),
+"/* " or ">" (as in a quoted message) or look like lists, or within a
+paragraph you can use a number of HTML tags:</p>
+
+<blockquote><p>p, img, br, hr, a, sub, sup, tt, i, b, h1, h2, h3,
+h4, h5, h6, cite, em, strong, code, samp, kbd, pre, blockquote, address,
+ol, dl, ul, dt, dd, li, dir, menu, table, tr, td, th</p></blockquote>
+
+</form>
+</div>
+</flutterbyrow>
+</flutterbyquery>
+
+
+
+
+<hr>
+<p>Connectivity provided by <a href="http://www.highertech.net/">highertech.net</a>
+, awesome
+bandwidth, well away from fault lines and other potential for natural
+disasters, reliable, and run by cool people.</p>
+
+<p>Questions, comments, flames: contact <a href="mailto:webmaster@flutterby.com">Dan Lyke</a>
+</p>
+
+<p>Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.</p>
+
+</body>
+</html>
+

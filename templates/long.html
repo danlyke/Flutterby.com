@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+  <head>
+<link rel="icon" href="/favicon.ico" type="image/ico">
+<link rel="shortcut icon" href="/favicon.ico">
+    <title>Flutterby&trade;!</title>
+  </head>
+
+  <body>
+<table width="100%">
+<tr><td align="left" valign="top">
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr><td width="172" height="48" bgcolor="#00aa00" background="/adbanners/leftgrad.png"><img src="/adbanners/headerleft.png" alt="Flutterby&trade;!" width="172" height="48" ></td>
+<td width="100%" bgcolor="#00aa00" align="center" valign="bottom">
+<p><strong>The online home of <a href="/danlyke/">Dan Lyke</a> with input from
+<a href="http://www.gemmell.org/">Todd</a>, <a href="http://www.dallasbay.net/">Larry</a>,
+<a href="http://www.bradway.net/">Eric</a>, Dylan, Topspin and you.</strong></p>
+</td>
+<td width="138" height="48" background="/adbanners/rightgrad.png" align="right"><a href="/cgi/color.cgi">change appearance and color scheme</a><br>
+<img src="/adbanners/headerrightspacer.png" alt="" width="138" height="1">
+</td></tr></table>
+
+<p>(This is a version for people who want to read all the comments at once, if you want a usable version for navigation try <a href="/">the regular Flutterby</a>.)</p>
+
+<flutterbyquery sql="
+SELECT DISTINCT(SUBSTR(CAST(entered AS TEXT),0,11)) AS thisentrydate FROM blogentries
+ORDER BY SUBSTR(CAST(entered AS TEXT),0,11) DESC LIMIT 7">
+<flutterbyrow>
+
+
+<flutterbyquery format="blogentry_text=>blogentry_texttype,blogentry_subject=>escapehtml,author_name=>escapehtml,month=>monthformat,day=>dayformat,dayofweek=>dayofweekformat"
+sql="
+SELECT 
+blogentries.id AS blogentry_id,
+blogentries.text AS blogentry_text,
+blogentries.texttype AS blogentry_texttype,
+blogentries.subject AS blogentry_subject,
+blogentries.commentcount AS blogentry_commentcount,
+date_part('year',blogentries.entered) AS year,
+date_part('month',blogentries.entered) AS month,
+date_part('day',blogentries.entered) AS day,
+date_part('dow',blogentries.entered) AS dayofweek,
+users.id AS author_id,
+users.name AS author_name,
+'escapehtml' AS escapehtml,
+'month' AS monthformat,
+'day' AS dayformat,
+'dayofweek' AS dayofweekformat
+FROM blogentries,users WHERE 
+ blogentries.author_id=users.id
+ AND blogentries.entered &lt;= '$thisentrydate 00:00:00'
+ AND blogentries.entered &gt;= '$thisentrydate 23:59:59'
+ ORDER BY blogentries.id DESC">
+
+<table width="100%">
+<tr><th colspan="2" align="left"><h1>$dayofweek $month $day, $year</h1></th></tr>
+
+<flutterbyrow>
+<tr><td align="left" valign="middle"><div class="entry">
+<h2>$blogentry_subject</h2>
+$blogentry_text</div>
+
+<flutterbyquery format="blogcomments_text=>blogcomments_texttype,blogcomments_name=>escapehtml" sql="
+SELECT
+ blogcomments.id AS blogcomments_id, 
+ blogcomments.entered AS blogcomments_entered, 
+ blogcomments.text AS blogcomments_text,
+ blogcomments.texttype AS blogcomments_texttype,
+ blogcomments.author_id AS blogcomments_author_id,
+ users.name AS blogcomments_name
+FROM users, blogcomments WHERE (users.id=blogcomments.author_id AND blogcomments.entry_id=$blogentry_id)
+ORDER BY blogcomments.entered">
+<flutterbyrow>
+<p><b>Comment made:</b> $blogcomments_entered <b>by:</b><a href="./user.cgi?id=$blogcomments_author_id">$blogcomments_name</a></p>
+$blogcomments_text
+</flutterbyrow>
+</flutterbyquery>
+
+
+
+</td>
+<td width="128" align="right" valign="top">
+<a href="archives/user.cgi?id=$author_id">$author_name</a>
+<a href="/archives/comments/$blogentry_id.html">comment $blogentry_commentcount</a></td></tr>
+</flutterbyrow>
+
+
+</table>
+</flutterbyquery>
+</flutterbyrow>
+</flutterbyquery>
+
+
+
+
+    <hr>
+    Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.
+<!-- Created: Sat Oct  7 20:12:13 PDT 2000 -->
+<!-- hhmts start -->
+Last modified: Thu Mar 15 11:32:44 PST 2001
+<!-- hhmts end -->
+  </body>
+</html>
+
+    <hr>
+    <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address>
+<!-- Created: Thu Mar 15 11:36:18 PST 2001 -->
+<!-- hhmts start -->
+Last modified: Mon Mar 19 08:36:11 PST 2001
+<!-- hhmts end -->
+  </body>
+</html>

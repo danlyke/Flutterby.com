@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+  <head>
+   <style type="text/css">
+	@import "/fcms.css";
+   </style>
+   <link rel="icon" href="/favicon.ico" type="image/ico">
+   <link rel="shortcut icon" href="/favicon.ico">
+
+    <title>$fcmsweblog_title: Edit User Info: <flutterbyquery format="bio_text=>escapehtml,bio_html=>bio_texttype"
+sql="SELECT name FROM users WHERE id=$userinfo_id LIMIT 1">
+<flutterbyrow>: $name</flutterbyrow></title>
+  </head>
+
+
+ <body class="flutterbybodystandard">
+<flutterbyquery format="bio_text=>escapehtml,bio_html=>bio_texttype"
+sql="SELECT 
+ name,
+ password, 
+ email,
+ homepage_url,
+ lid_url,
+ adbanner_url,
+ bio_text,
+ bio_text AS bio_html,
+ bio_texttype,
+ weblog_url,
+ weblog_name,
+ textentryrows,
+ textentrycols,
+ 'escapehtml' AS escapehtml,
+ CASE
+   WHEN addblogentries='Y' THEN
+    '[&lt;a href=&quot;./newentry.cgi&quot;&gt;&lt;b&gt;Add New Weblog Entry&lt;/b&gt;&lt;/a&gt;]'
+   ELSE
+    ''
+ END AS addweblogentry,
+ showemailinnntpversion,
+ CASE
+   WHEN showemailinnntpversion THEN
+    '<input name=&quot;_showemailinnntpversion&quot; type=&quot;checkbox&quot; checked=&quot;checked&quot;>'
+   ELSE
+    '<input name=&quot;_showemailinnntpversion&quot; type=&quot;checkbox&quot;>'
+ END AS showemailinnntpversioncheckbox,
+ CASE
+   WHEN addarticles='y' THEN
+    ''
+   ELSE
+    ''
+ END AS addnewarticle,
+ CASE
+   WHEN addblogentries='Y' OR addarticles='Y' THEN
+    '[&lt;a href=&quot;./uploadphoto.cgi&quot;&gt;&lt;b&gt;Upload Photo&lt;/b&gt;&lt;/a&gt;]'
+   ELSE
+    ''
+ END AS uploadphoto,
+ CASE
+   WHEN addblogentries='Y' THEN
+    '[&lt;a href=&quot;./edittopics.cgi&quot;&gt;&lt;b&gt;Edit Weblog Topics&lt;/b&gt;&lt;/a&gt;]'
+   ELSE
+    ''
+ END AS editblogtopics
+ FROM users,capabilities WHERE capabilities.weblog_id=$fcmsweblog_id AND capabilities.user_id=users.id AND id=$userinfo_id">
+<flutterbyrow>
+<div id="subpagebanner">
+<h1><a href="/">$fcmsweblog_title</a>: Edit User Info: $name</h1>
+
+<form action="/cgi/search.cgi">
+<p><a href="/archives/viewentry.cgi?unread=1">Next unread comment</a> / 
+<a href="/archives/viewentry.cgi?unread=catchup">Catchup all unread comments</a></strong>
+<a href="/archives/userinfo.cgi">User Account Info</a> |
+<a href="/archives/logout.cgi">Logout</a> |
+<a href="/syndicated.html">XML/Pilot/etc versions</a> |
+<a href="/long.html">Long version (with comments)</a> |
+<a href="/archives/">Weblog archives</a> |
+<a href="sitemap.html">Site Map</a> |
+<input type="text" name="search" /><input value="search" type="submit" name="go" /> | <a href="/archives/topics/">Browse Topics</a></p></form>
+</div>
+
+
+<h2>$name</h2>
+
+<p>$addweblogentry $editblogtopics $uploadphoto $addnewarticle</p>
+
+<p>
+<em><a href="http://lid.netmesh.org/">LID<sup>tm</sup></a>:</em>
+ <a href="$lid_url">$lid_url</a>
+<br><em>Homepage:</em> <a href="$homepage_url">$homepage_url</a>
+<br><em>Weblog:</em> <a href="$weblog_url">
+<img src="$adbanner_url" width="175" height="24"> $weblog_name</a>
+</p>
+$bio_html
+
+
+<div>
+<form style="margin-left: 0;" method="post" action="./userinfo.cgi">
+<em>Email ($showemailinnntpversioncheckbox show on NNTP version? Leave unchecked if unsure)</em>
+<br><input type="text" name="_email" value="$email" size="80" length="254">
+<br><em>Password</em>
+<br><input type="password" name="_password1" value="" size="24" length="254">
+ And again to verify: <input type="password" name="_password2" value="" size="24" length="254">
+<br><em><a href="http://lid.netmesh.org/">LID</a> url (an identity and single sign-on that you own, see <a href="http://lid.netmesh.org/">http://lid.netmesh.org/</a> for more information)</em>
+<br><input type="text" name="_lid_url" value="$lid_url" size="80" length="254">
+<br><em>Homepage url (bio information, that sort of thing)</em>
+<br><input type="text" name="_homepage_url" value="$homepage_url" size="80" length="254">
+<br><em>Weblog url (if you've got a regularly updated site)</em>
+<br><input type="text" name="_weblog_url" value="$weblog_url" size="80" length="254">
+<br><em>Weblog name</em>
+<br><input type="text" name="_weblog_name" value="$weblog_name" size="80" length="254">
+<br><em>Url of 175x24 adbanner advertising your weblog</em>
+<br><input type="text" name="_adbanner_url" value="$adbanner_url" size="80" length="254">
+<br><em>Some Bio Text</em>
+<br><textarea name="_bio_text" rows="16" cols="80" wrap="physical">$bio_text</textarea>
+<br>
+Format with: <select name="_bio_texttype">
+<flutterbyquery sql="SELECT id AS texttype_id, name AS texttype_name FROM texttypes">
+<flutterbyrow><option value="$texttype_id">$texttype_name</option></flutterbyrow>
+</flutterbyquery>
+</select>
+<p>Text entry field: Rows: <input type="text" name="_textentryrows" value="$textentryrows">
+Columns: <input type="text" name="_textentrycols" value="$textentrycols"></p>
+<p>Show user comments in
+<select name="_showcommentsreversed">
+<option value="false">ascending</option><option value="true">descending</option>
+</select>
+chronological order</p>
+
+<p><input type="submit" name="_updateentry" value="Update Entry"></p>
+</form>
+</div>
+
+
+<flutterbyquery format="article_title=>escapehtml"
+sql="SELECT id AS article_id, title AS article_title
+FROM articles WHERE author_id=$userinfo_id AND timespublished=0 ORDER BY id DESC">
+
+<h3>Unpublished Articles</h3>
+
+<p>If you see anything in here, please ignore it, I'm developing a new
+rant system.</p>
+
+<ul>
+<flutterbyrow>
+<li>Article ID#<a href="/archives/editarticle.cgi?id=$article_id">$article_id: $article_title</a></li>
+</flutterbyrow>
+</ul>
+
+</flutterbyquery>
+
+</flutterbyrow>
+
+</flutterbyquery>
+
+
+    <hr>
+    <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address>
+<p>Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.</p>
+  </body>
+</html>

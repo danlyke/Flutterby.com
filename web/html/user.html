@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+  <head>
+   <style type="text/css">
+	@import "/fcms.css";
+   </style>
+   <link rel="icon" href="/favicon.ico" type="image/ico">
+   <link rel="shortcut icon" href="/favicon.ico">
+
+    <title>User Info<flutterbyquery format="bio_text=>bio_texttype,name=>escapehtml"
+sql="SELECT 
+ name FROM users WHERE $conditions">
+<flutterbyrow>: $name</flutterbyrow></title>
+  </head>
+
+  <body class="flutterbybodystandard">
+
+<flutterbyquery format="bio_text=>bio_texttype,name=>escapehtml"
+sql="SELECT 
+ id AS user_id, 
+ name, 
+ CASE
+   WHEN homepage_url = '' OR homepage_url = 'http://' THEN
+     ''
+   ELSE
+     ('&lt;em&gt;Homepage&lt;/em&gt; &lt;a href=&quot;'||homepage_url||'&quot;&gt;'||homepage_url||'&lt;/a&gt;')
+   END
+ AS homepage_url_text, 
+ CASE
+   WHEN lid_url = '' OR lid_url = 'http://' THEN
+     ''
+   ELSE
+     ('&lt;em&gt;&lt;a href=&quot;http://lid.netmesh.org/&quot;&gt;LID&lt;/a&gt;:&lt;/em&gt; &lt;a href=&quot;'||lid_url||'&quot;&gt;'||lid_url||'&lt;/a&gt;')
+   END
+ AS lid_url_text, 
+ CASE
+   WHEN weblog_url = '' OR weblog_url = 'http://' THEN
+     ''
+   ELSE
+     ('&lt;br&gt;&lt;em&gt;Weblog&lt;/em&gt;&lt;a href=&quot;'||weblog_url||'&quot;&gt;&lt;img src=&quot'||adbanner_url||'&quot width=&quot;125&quot; height=&quot;24&quot; alt=&quot;'||weblog_name||'&quot;&gt;'||weblog_name||'&lt;/a&gt;')
+   END
+ AS weblog_url_text, 
+ bio_text, 
+ bio_texttype, 
+ adbanner_url, 
+ weblog_name, 
+ 'escapehtml' as escapehtml
+ FROM users WHERE $conditions">
+<flutterbyrow>
+
+<div id="subpagebanner">
+<h1><a href="/">$weblog_title</a>: User Info: $name</h1>
+
+<form action="/cgi/search.cgi">
+<p><a href="/archives/viewentry.cgi?unread=1">Next unread comment</a> / 
+<a href="/archives/viewentry.cgi?unread=catchup">Catchup all unread comments</a></strong>
+<a href="/archives/userinfo.cgi">User Account Info</a> |
+<a href="/archives/logout.cgi">Logout</a> |
+<a href="/syndicated.html">XML/Pilot/etc versions</a> |
+<a href="/long.html">Long version (with comments)</a> |
+<a href="/archives/">Weblog archives</a> |
+<a href="sitemap.html">Site Map</a> |
+<input type="text" name="search" /><input value="search" type="submit" name="go" /> | <a href="/archives/topics/">Browse Topics</a></p></form>
+</div>
+
+
+<p>
+$lid_url_text
+$homepage_url_text
+$weblog_url_text
+</p>
+$bio_text
+
+<flutterbyquery format="subject=>escapehtml"
+sql="SELECT distinct(blogentries.id) AS entry_id,
+blogentries.subject AS entry_subject
+FROM blogcomments,blogentries WHERE blogcomments.author_id=$user_id
+AND blogcomments.entry_id=blogentries.id ORDER BY blogentries.id DESC">
+<h2>Comments made on</h2>
+
+<ul>
+<flutterbyrow><li><a href="/archives/comments/$entry_id.html">($entry_id) $entry_subject</a></li>
+</flutterbyrow>
+</ul>
+</flutterbyquery>
+
+</flutterbyrow>
+</flutterbyquery>
+
+    <hr>
+    <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address>
+<p>Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.</p>
+  </body>
+</html>

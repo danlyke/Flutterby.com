@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+  <head>
+<link rel="icon" href="/favicon.ico" type="image/ico">
+<link rel="shortcut icon" href="/favicon.ico">
+    <title>Flutterby&trade;! (short)</title>
+  </head>
+
+  <body>
+    <h1>Flutterby&trade;! (short)</h1>
+
+
+<flutterbyquery sql="
+SELECT DISTINCT(SUBSTR(CAST(entered AS TEXT),0,11)) AS thisentrydate FROM blogentries
+ORDER BY SUBSTR(CAST(entered AS TEXT),0,11) DESC LIMIT 2">
+<flutterbyrow>
+
+
+<flutterbyquery format="blogentry_text=>blogentry_texttype,blogentry_subject=>escapehtml,author_name=>escapehtml,month=>monthformat,day=>dayformat,dayofweek=>dayofweekformat"
+sql="
+SELECT 
+blogentries.id AS blogentry_id,
+blogentries.text AS blogentry_text,
+blogentries.texttype AS blogentry_texttype,
+blogentries.subject AS blogentry_subject,
+blogentries.commentcount AS blogentry_commentcount,
+date_part('year',blogentries.entered) AS year,
+date_part('month',blogentries.entered) AS month,
+date_part('day',blogentries.entered) AS day,
+date_part('dow',blogentries.entered) AS dayofweek,
+users.id AS author_id,
+users.name AS author_name,
+'escapehtml' AS escapehtml,
+'month' AS monthformat,
+'day' AS dayformat,
+'dayofweek' AS dayofweekformat
+FROM blogentries,users WHERE 
+ blogentries.author_id=users.id
+ AND blogentries.entered &gt;= '$thisentrydate 00:00:00'
+ AND blogentries.entered &lt;= '$thisentrydate 23:59:59'
+ ORDER BY blogentries.id DESC">
+
+<h2>$dayofweek $month $day, $year</h2>
+
+<flutterbyrow>
+<p><strong>$blogentry_subject</strong>
+$author_name /
+<a href="/archives/comments/$blogentry_id.html">comment $blogentry_commentcount</a>
+</p>
+<div class="entry">$blogentry_text</div>
+</flutterbyrow>
+
+</flutterbyquery>
+</flutterbyrow>
+</flutterbyquery>
+
+    <hr>
+    Flutterby&tm;! is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.
+
+<!-- Created: Thu Mar 15 11:32:07 PST 2001 -->
+<!-- hhmts start -->
+Last modified: Thu Mar 15 12:48:17 PST 2001
+<!-- hhmts end -->
+  </body>
+</html>

@@ -1,0 +1,138 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+<head>
+   <style type="text/css">
+	@import "/fcms.css";
+   </style>
+   <link rel="icon" href="/favicon.ico" type="image/ico">
+   <link rel="shortcut icon" href="/favicon.ico">
+
+<title>
+$fcmsweblog_title: Edit Entry
+</title>
+</head>
+
+<body class="flutterbybodystandard">
+
+<div id="subpagebanner">
+<h1><a href="/">$fcmsweblog_title</a>: Edit Entry</h1>
+
+
+<form action="/cgi/search.cgi">
+<p><a href="/archives/viewentry.cgi?unread=1">Next unread comment</a> / 
+<a href="/archives/viewentry.cgi?unread=catchup">Catchup all unread comments</a></strong>
+<a href="/archives/userinfo.cgi">User Account Info</a> |
+<a href="/archives/logout.cgi">Logout</a> |
+<a href="/syndicated.html">XML/Pilot/etc versions</a> |
+<a href="/long.html">Long version (with comments)</a> |
+<a href="/archives/">Weblog archives</a> |
+<a href="sitemap.html">Site Map</a> |
+<input type="text" name="search" /><input value="search" type="submit" name="go" /> | <a href="/archives/topics/">Browse Topics</a></p></form>
+</div>
+<flutterbyquery format="displaytext=>texttype,text=>edithtml,name=>escapehtml" sql="
+SELECT
+ blogentries.id AS blogentry_id,
+ article_id AS article_id,
+ blogentries.entered AS entered, 
+ blogentries.text AS text,
+ blogentries.text AS displaytext,
+ blogentries.texttype AS texttype,
+ blogentries.subject AS title,
+ blogentries.author_id AS author_id,
+ blogentries.primary_url AS primary_url,
+ blogentries.enclosure_url AS enclosure_url,
+ blogentries.commentcount AS commentcount,
+ users.name AS name,
+ 'escapehtml' AS escapehtml,
+ 'edithtml' AS edithtml
+FROM users, blogentries WHERE (users.id=blogentries.author_id and ($queryterms))
+ORDER BY blogentries.entered DESC">
+
+
+<flutterbyrow>
+
+<p><b>$id $entered $title</b> by 
+<a href="/archives/user.cgi?id=$author_id">$name</a> 
+comments <a href="/archives/viewentry.cgi?id=$blogentry_id">$commentcount</a> $deleteweblogentry</p>
+$displaytext
+
+
+<flutterbyquery format="topic=>escapehtml" sql="
+SELECT topic, topic_id, 'escapehtml' AS escapehtml FROM articletopiclinks, articletopics WHERE articletopics.id=topic_id AND article_id=$article_id">
+
+
+
+<p>[ related topics: 
+<flutterbyrow><a href="/archives/browsetopics.cgi?id=$topic_id">$topic</a> </flutterbyrow>
+]</p>
+</flutterbyquery>
+
+
+<form style="margin-left: 0;" method="post" action="./editentry.cgi">
+<input type="hidden" name="_article_id" value="$article_id">
+<input type="hidden" name="_weblogentry_id" value="$blogentry_id">
+<input type="hidden" name="id" value="$blogentry_id">
+<p><b>Entry #</b>$blogentry_id <b>Article #</b>$article_id 
+<b>Made By:</b> $name
+<br>Subject:
+<br><input type="text" name="_title" value="$title" size="80"><br>
+<br>Primary URL:
+<br><input type="text" name="_primary_url" size="80" value="$primary_url" length="254">
+<br>Enclosure URL (for audio blog posts and the like):
+<br><input type="text" name="_enclosure_url" size="80" value="$enclosure_url" length="254">
+
+<br><textarea name="_text" rows="$textentryrows" cols="$textentrycols" wrap="physical">$text</textarea>
+<br>
+Format with: <select name="_texttype">
+<flutterbyquery sql="SELECT id AS texttype_id, name AS texttype_name FROM texttypes">
+<flutterbyrow><option value="$texttype_id">$texttype_name</option></flutterbyrow>
+</flutterbyquery>
+</select>
+
+<h2>related topics:</h2>
+<p><flutterbyquery format="topic=>escapehtml" sql="
+SELECT topic, topic_id, 'escapehtml' AS escapehtml FROM articletopiclinks, articletopics WHERE articletopics.id=topic_id AND article_id=$article_id">
+<flutterbyrow><input type="checkbox" name="_topic.$topic_id" alt="" value="1" checked="1">$topic </flutterbyrow>
+</flutterbyquery>
+
+<br><select name="_newtopic1">
+<option value="">[none selected]</option>
+<flutterbyquery variable="topicselectlist">
+<flutterbyrow><option value="$topic_id">$topic</option></flutterbyrow>
+</flutterbyquery>
+</select>
+<br><select name="_newtopic2">
+<option value="">[none selected]</option>
+<flutterbyquery variable="topicselectlist">
+<flutterbyrow><option value="$topic_id">$topic</option></flutterbyrow>
+</flutterbyquery>
+</select>
+<br><select name="_newtopic3">
+<option value="">[none selected]</option>
+<flutterbyquery variable="topicselectlist">
+<flutterbyrow><option value="$topic_id">$topic</option></flutterbyrow>
+</flutterbyquery>
+</select>
+<br>Or add a new topic: <input name="_addnewtopic"> (please <a href="/archives/edittopics.cgi">go edit it</a> later).
+</p>
+
+<input type="submit" name="_updateentry" value="Update Entry"></p>
+<p>
+Trackback Excerpt:<br>
+<input type="text" name="_trackbackexcerpt" value="" size="80"><br>
+<input type="submit" name="_trackback" value="Ping Trackbacks"></p></form>
+
+</flutterbyrow>
+</flutterbyquery>
+
+<hr>
+<p>Connectivity provided by <a href="http://www.highertech.net/">highertech.net</a>
+, awesome
+bandwidth, well away from fault lines and other potential for natural
+disasters, reliable, and run by cool people.</p>
+
+<p>Questions, comments, flames: contact <a href="mailto:webmaster@flutterby.com">Dan Lyke</a>
+</p>
+
+<p>Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.</p>
+</body>
+</html>

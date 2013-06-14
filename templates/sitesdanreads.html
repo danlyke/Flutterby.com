@@ -1,0 +1,44 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+<head>
+<style type="text/css">
+	@import "fcms.css";
+</style>
+<link rel="icon" href="/favicon.ico" type="image/ico">
+<link rel="shortcut icon" href="/favicon.ico">
+    <title>Flutterby&trade;!</title>
+</head>
+<body>
+<h1>Flutterby - just stuff</h1>
+
+<div id="sitesdanreads">
+<flutterbyquery format="urltypename=>escapehtml" sql="
+SELECT 'escapehtml' AS escapehtml, text AS urltypename, id AS urltypeid FROM urlusertypes where user_id=1 ORDER BY id">
+<h2>Sites Dan Reads</h2>
+
+<flutterbyrow>
+<h3>$urltypename</h3>
+
+<flutterbyquery format="urltitle=>escapehtml,url=>escapeurl,month=>monthformat" sql="
+SELECT 'escapehtml' AS escapehtml, urls.title AS urltitle, urls.url AS url,
+'escapeurl' as escapeurl
+FROM urls, urltypes 
+WHERE urltypes.url_id=urls.id 
+AND urltypes.type_id=$urltypeid
+ORDER BY urls.title">
+<ul>
+<flutterbyrow>
+<li><a rel="nofollow" href="$url">$urltitle</a> <small>$month</small></li>
+</flutterbyrow>
+</ul>
+</flutterbyquery>
+</flutterbyrow>
+</flutterbyquery>
+</div>
+</div>
+
+<div class="footer">
+    <hr>
+    Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.
+</div>
+  </body>
+</html>

@@ -1,0 +1,90 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+<head>
+   <style type="text/css">
+	@import "/fcms.css";
+   </style>
+   <link rel="icon" href="/favicon.ico" type="image/ico">
+   <link rel="shortcut icon" href="/favicon.ico">
+
+<title>
+$fcmsweblog_title: Edit Comment
+</title>
+</head>
+
+<body class="flutterbybodystandard">
+
+
+<div id="subpagebanner">
+<h1><a href="/">$fcmsweblog_title</a>: Edit Comment</h1>
+<form action="/cgi/search.cgi">
+<p><a href="/archives/viewentry.cgi?unread=1">Next unread comment</a> / 
+<a href="/archives/viewentry.cgi?unread=catchup">Catchup all unread comments</a></strong>
+<a href="/archives/userinfo.cgi">User Account Info</a> |
+<a href="/archives/logout.cgi">Logout</a> |
+<a href="/syndicated.html">XML/Pilot/etc versions</a> |
+<a href="/long.html">Long version (with comments)</a> |
+<a href="/archives/">Weblog archives</a> |
+<a href="sitemap.html">Site Map</a> |
+<input type="text" name="search" /><input value="search" type="submit" name="go" /> | <a href="/archives/topics/">Browse Topics</a></p></form>
+</div>
+
+
+
+<flutterbyquery format="title=>escapehtml,formattedtext=>texttype,text=>edithtml,name=>escapehtml" sql="
+SELECT
+ articles.id AS article_id,
+ articles.entered AS entered, 
+ articles.text AS text,
+ articles.title AS title,
+ articles.title AS formattedtitle,
+ articles.text AS formattedtext,
+ articles.texttype AS texttype,
+ articles.author_id AS author_id,
+ users.name AS name,
+ 'escapehtml' AS escapehtml,
+ 'edithtml' AS edithtml
+FROM users, articles WHERE ($queryterms) AND ( articles.author_id=users.id )
+ORDER BY entered DESC">
+<flutterbyrow>
+
+<p>Here's what your comment currently looks like</p>
+
+<h2>$title</h2>
+
+<p><b>$id $entered $subject</b> by 
+<a href="/archives/user.cgi?id=$author_id">$name</a> 
+comments <a href="/archives/viewentry.cgi?id=$blogentry_id">$commentcount</a></p>
+$formattedtext
+
+
+
+
+<h2>Make any changes you wish</h2>
+<form style="margin-left: 0;" method="post" action="/archives/wiki.cgi?wikiid=$wikiid">
+<input type="hidden" name="wikiid" value="$wikiid">
+<input type="hidden" name="_article_id" value="$articleid">
+<p><b>Title:</b><br><input type="text" name="_title" value="$title" size="80"></p>
+
+<p><textarea name="_text" rows="$textentryrows" cols="$textentrycols" wrap="physical">$text</textarea>
+Format with: <select name="_texttype">
+<flutterbyquery sql="SELECT id AS texttype_id, name AS texttype_name FROM texttypes">
+<flutterbyrow><option value="$texttype_id">$texttype_name</option></flutterbyrow>
+</flutterbyquery>
+</select>
+
+</p><p><input type="submit" name="_comment" value="Make Changes"></p></form>
+</flutterbyrow>
+</flutterbyquery>
+
+<hr>
+<p>Connectivity provided by <a href="http://www.highertech.net/">highertech.net</a>
+, awesome
+bandwidth, well away from fault lines and other potential for natural
+disasters, reliable, and run by cool people.</p>
+
+<p>Questions, comments, flames: contact <a href="mailto:webmaster@flutterby.com">Dan Lyke</a>
+</p>
+
+<p>Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.</p>
+</body>
+</html>

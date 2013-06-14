@@ -1,0 +1,120 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+<head>
+   <style type="text/css">
+	@import "/fcms.css";
+   </style>
+   <link rel="icon" href="/favicon.ico" type="image/ico">
+   <link rel="shortcut icon" href="/favicon.ico">
+
+<title>
+$fcmsweblog_title: Edit Photo
+</title>
+</head>
+
+<body class="flutterbybodystandard">
+
+<div id="subpagebanner">
+<h1><a href="/">$fcmsweblog_title</a>: Edit Photo</h1>
+
+
+<form action="/cgi/search.cgi">
+<p><a href="/archives/viewentry.cgi?unread=1">Next unread comment</a> / 
+<a href="/archives/viewentry.cgi?unread=catchup">Catchup all unread comments</a></strong>
+<a href="/archives/userinfo.cgi">User Account Info</a> |
+<a href="/archives/logout.cgi">Logout</a> |
+<a href="/syndicated.html">XML/Pilot/etc versions</a> |
+<a href="/long.html">Long version (with comments)</a> |
+<a href="/archives/">Weblog archives</a> |
+<a href="sitemap.html">Site Map</a> |
+<input type="text" name="search" /><input value="search" type="submit" name="go" /> | <a href="/archives/topics/">Browse Topics</a></p></form>
+</div>
+
+<form style="margin-left: 0;" method="post" action="./editphoto.cgi">
+<flutterbyquery format="title=>escapehtml, text=>texttype" sql="
+SELECT
+ photos.id AS photo_id,
+ photos.taken AS taken,
+ photos.photographer_id AS photographer_id,
+ people.name AS photographer_name,
+ photos.model_release AS model_release,
+ modelrelease.description AS model_release_description,
+ modelrelease.file AS model_release_file,
+ photos.tech_notes AS tech_notes,
+ photos.directory AS directory,
+ articles.id AS article_id,
+ articles.title AS title,
+ articles.text AS text,
+ articles.texttype AS texttype,
+ 'escapehtml' AS escapehtml
+FROM people, modelrelease,photos,articles
+ WHERE (articles.id=photos.article_id 
+ AND people.id=photos.photographer_id 
+ AND modelrelease.id=photos.model_release AND ($queryterms))
+ORDER BY photos.id">
+<flutterbyrow>
+
+<p>
+<flutterbyquery sql="
+SELECT
+  photosizes.filename AS filename,
+  photosizes.width AS width,
+  photosizes.height AS height
+FROM photosizes WHERE id=
+  COALESCE (
+   (SELECT photosizes.id FROM photosizes WHERE photosizes.photo_id=$photo_id
+     ORDER BY photosizes.width LIMIT 1 OFFSET $sizeimagetoshow),
+   (SELECT photosizes.id FROM photosizes WHERE photosizes.photo_id=$photo_id
+     ORDER BY photosizes.width LIMIT 1))">
+<flutterbyrow>
+<img src="/images/$directory/$filename" width="$width" height="$height" alt="$title" align="left">
+</flutterbyrow>
+</flutterbyquery>
+
+<input type="hidden" name="_id!$photo_id" value="$photo_id">
+<input type="hidden" name="_article_id!$article_id" value="$article_id">
+Photo ID: $photo_id / Article ID: $article_id (<a href="/archives/photo.cgi?id=$photo_id">browse this photo</a>)<br>
+Taken: <input name="_taken!$photo_id" value="$taken"><br>
+Photographer: <a href="/archives/user.cgi?id=$photographer_id">$photographer_name</a><br>
+Tech Notes: <input name="_tech_notes!$photo_id" value="$tech_notes"><br>
+Title: <input name="_title!$article_id" value="$title"><br>
+Description: <textarea name="_text!$article_id" rows="$textentryrows" cols="$textentrycols" wrap="physical">$text</textarea> <br>
+Location: <input name="_location!$article_id" value="$location"><br>
+<table>
+<tr><th></th><th>Longitude</th><th>Lattitude</th><th>Accuracy</th></tr>
+<tr><th>Camera</th>
+    <td><input name="_camera_position_longitude!$article_id"></td>
+    <td><input name="_camera_position_lattitude!$article_id"></td>
+    <td><input name="_camera_position_accuracy!$article_id"></td>
+</tr>
+<tr><th>Subject</th>
+    <td><input name="_subject_position_longitude!$article_id"></td>
+    <td><input name="_subject_position_lattitude!$article_id"></td>
+    <td><input name="_subject_position_accuracy!$article_id"></td>
+</tr>
+</table>
+
+Model Release:<select name="_model_release!$photo_id">
+<flutterbyquery sql="SELECT id AS model_release_id, description AS model_release_description
+FROM modelrelease ORDER BY id">
+<flutterbyrow><option value="$model_release_id">$model_release_description</option></flutterbyrow>
+</flutterbyquery>
+</select><br>
+<br clear="left">
+
+</flutterbyrow>
+</flutterbyquery>
+
+<br clear="left">
+<p><input type="submit" name="_update" value="Update Entry"></p></form>
+<hr>
+<p>Connectivity provided by <a href="http://www.highertech.net/">highertech.net</a>
+, awesome
+bandwidth, well away from fault lines and other potential for natural
+disasters, reliable, and run by cool people.</p>
+
+<p>Questions, comments, flames: contact <a href="mailto:webmaster@flutterby.com">Dan Lyke</a>
+</p>
+
+<p>Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.</p>
+</body>
+</html>

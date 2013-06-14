@@ -1,0 +1,100 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+<head>
+<style type="text/css">
+	@import "fcms.css";
+</style>
+<link rel="icon" href="/favicon.ico" type="image/ico">
+<link rel="shortcut icon" href="/favicon.ico">
+    <title>Flutterby&trade;!</title>
+<link rel="alternate" type="application/rss+xml" 
+    title="RSS" href="http://www.flutterby.com/main.rdf">
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="geo.country" content="USA">
+<meta name="geo.placename" content="Fairfax, California">
+<meta name="geo.position" content="37.988428;-122.582952;120">
+<meta name="ICBM" content="37.988428, -122.582952">
+<meta name="DC.title" content="Flutterby&trade;!"> 
+</head>
+
+
+<body class="flutterbybodystandard">
+
+<div id="banner">
+<h1>$fcmsweblog_title</h1>
+<p id="bannertagline">Short attention spans in a world full of flowers</p>
+
+<form action="/cgi/search.cgi">
+<p><a href="/archives/viewentry.cgi?unread=1">Next unread comment</a> |
+<a href="/archives/userinfo.cgi">User Account Info</a> |
+<a href="/archives/logout.cgi">Logout</a> |
+<a href="http://www.flutterby.com/mainlong.rdf"><img src="http://www.flutterby.com/adbanners/xml.gif" width="36" height="14" border="0" alt="Click here to see an XML representation of the content of this weblog."></a>
+<a href="/syndicated.html">XML/Palm/etc versions</a> |
+<a href="/long.html">Long version (with comments)</a> |
+<a href="/archives/">Weblog archives</a> |
+<a href="sitemap.html">Site Map</a> |
+<input type="text" name="search" /><input value="search" type="submit" name="go" /> | <a href="/archives/topics/">Browse Topics</a></p></form>
+</div>
+
+<div id="maincolumn" class="weblogentries">
+
+<flutterbyquery format="blogentry_text=>blogentry_texttype,blogentry_subject=>escapehtml,author_name=>escapehtml,month=>monthformat,day=>dayformat,dayofweek=>dayofweekformat"
+sql="
+SELECT 
+weblogentries.id AS blogentry_id,
+articles.text AS blogentry_text,
+articles.texttype AS blogentry_texttype,
+articles.title AS blogentry_subject,
+weblogentries.commentcount AS blogentry_commentcount,
+date_part('year',articles.entered) AS year,
+date_part('month',articles.entered) AS month,
+date_part('day',articles.entered) AS day,
+date_part('dow',articles.entered) AS dayofweek,
+users.id AS author_id,
+users.name AS author_name,
+CASE
+  WHEN (SELECT COUNT(weblogentrybacklinks.weblogentry_id) 
+  FROM weblogentrybacklinks, urls
+        WHERE urls.id=weblogentrybacklinks.url_id 
+	AND weblogentrybacklinks.weblogentry_id=weblogentries.id 
+        AND (urls.ignoreasreferrer IS NULL OR urls.ignoreasreferrer != 'Y')
+	GROUP BY weblogentrybacklinks.weblogentry_id 
+        ORDER BY weblogentrybacklinks.weblogentry_id LIMIT 1) > 0 THEN
+    'inbound links'
+  ELSE
+    ''
+  END
+AS backlinks,
+'escapehtml' AS escapehtml,
+'month' AS monthformat,
+'day' AS dayformat,
+'dayofweek' AS dayofweekformat
+FROM weblogentries,users,articles WHERE 
+ articles.author_id=users.id
+ AND weblogentries.article_id = articles.id
+ AND articles.entered <= NOW()
+ AND not weblogentries.ignorepost
+ ORDER BY weblogentries.id DESC">
+<div style="clear: both;">
+<h2>$dayofweek $month $day, $year</h2>
+</div>
+
+<flutterbyrow>
+<div class="weblogentry">
+ <div class="weblogentryheader"><h2 class="weblogentrytitle">$blogentry_subject</h2>
+   <a class="weblogentryarchivelink" href="/archives/user.cgi?id=$author_id">$author_name</a>
+   <a href="/archives/comments/$blogentry_id.html">comments ($blogentry_commentcount)</a>
+ </div>
+ <div class="weblogentrybody">$blogentry_text</div>
+</div>
+</flutterbyrow>
+</div>
+</flutterbyquery>
+</div>
+
+
+<div class="footer">
+    <hr>
+    Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.
+</div>
+  </body>
+</html>

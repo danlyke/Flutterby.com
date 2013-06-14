@@ -1,0 +1,60 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+<head>
+   <style type="text/css">
+	@import "/fcms.css";
+   </style>
+   <link rel="icon" href="/favicon.ico" type="image/ico">
+   <link rel="shortcut icon" href="/favicon.ico">
+
+<title>
+Edit URL
+</title>
+</head>
+
+<body class="flutterbybodystandard">
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr><td width="172" height="48" bgcolor="#00aa00" background="/adbanners/leftgrad.png"><a href="/"><img border="0" src="/adbanners/headerleft.png" alt="Flutterby&trade;!" width="172" height="48" ></a></td>
+<td width="100%" bgcolor="#00aa00" align="center"><h1>Edit URL</h1></td>
+<td width="138" height="48" background="/adbanners/rightgrad.png"><a href="/cgi/color.cgi">change appearance and color scheme</a><br>
+<img src="/adbanners/rightgrad.png" alt="" width="138" height="1">
+</td></tr></table>
+
+<p>Hacked together interface which doesn't allow interactive editing! User friendliness to come.</p>
+
+<flutterbyquery format="displaytext=>texttype,text=>escapehtml,name=>escapehtml" sql="
+SELECT
+    id,
+    url,
+    title,
+    ignoreasreferrer,
+    lastupdate,
+    lastchecked,
+    lastindexed,
+    lasthttpstatus
+FROM urls WHERE id=$url_id">
+<flutterbyrow>
+<strong>id</strong>: $id<br>
+<strong>url</strong>: $url<br>
+<strong>title</strong>: $title<br>
+<strong>ignoreasreferrer</strong>: $ignoreasreferrer 
+(set to <a href="/archives/editurl.cgi?url_id=$urlid&ignoreasreferrer=Y">ignore ('Y')</a> 
+or <a href="/archives/editurl.cgi?url_id=$urlid&ignoreasreferrer=N">allow ('N')</a>)<br>
+<strong>lastupdate</strong>: $lastupdate<br>
+<strong>lastchecked</strong>: $lastchecked<br>
+<strong>lastindexed</strong>: $lastindexed<br>
+<strong>lasthttpstatus</strong>: $lasthttpstatus<br>
+</flutterbyrow>
+</flutterbyquery>
+<hr>
+<p>Connectivity provided by <a href="http://www.highertech.net/">highertech.net</a>
+, awesome
+bandwidth, well away from fault lines and other potential for natural
+disasters, reliable, and run by cool people.</p>
+
+<p>Questions, comments, flames: contact <a href="mailto:webmaster@flutterby.com">Dan Lyke</a>
+</p>
+
+<p>Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.</p>
+</body>
+</html>

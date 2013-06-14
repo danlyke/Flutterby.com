@@ -1,0 +1,71 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+<head>
+   <style type="text/css">
+	@import "/fcms.css";
+   </style>
+   <link rel="icon" href="/favicon.ico" type="image/ico">
+   <link rel="shortcut icon" href="/favicon.ico">
+
+<title>
+$fcmsweblog_title: New Entry
+</title>
+</head>
+
+<body class="flutterbybodystandard">
+
+<div id="subpagebanner">
+<h1><a href="/">$fcmsweblog_title</a>: New Entry</h1>
+
+
+<form action="/cgi/search.cgi">
+<p><a href="/archives/viewentry.cgi?unread=1">Next unread comment</a> / 
+<a href="/archives/viewentry.cgi?unread=catchup">Catchup all unread comments</a></strong>
+<a href="/archives/userinfo.cgi">User Account Info</a> |
+<a href="/archives/logout.cgi">Logout</a> |
+<a href="/syndicated.html">XML/Pilot/etc versions</a> |
+<a href="/long.html">Long version (with comments)</a> |
+<a href="/archives/">Weblog archives</a> |
+<a href="sitemap.html">Site Map</a> |
+<input type="text" name="search" /><input value="search" type="submit" name="go" /> | <a href="/archives/topics/">Browse Topics</a></p></form>
+</div>
+
+<form style="margin-left: 0;" style="margin-left: 0;" method="post" action="./editentry.cgi">
+<p><br>Subject:
+<br><input type="text" name="_title" value="" size="80"><br>
+<p><br>Publish: <select name="_publishdelay">
+<option value="0">Now</option>
+<option value="0.5">12 hours later</option>
+<option value="1">Tomorrow</option>
+<option value="2">The day after</option>
+<option value="3">3 days hence</option>
+<option value="4">4 days hence</option>
+<option value="5">5 days hence</option>
+<option value="6">6 days hence</option>
+</flutterbyquery>
+</select>
+
+<br>Primary URL:
+<br><input type="text" name="_primary_url" size="80" value="" length="254"><br>
+<br>Enclosure URL (for audio weblog posts and the like):
+<br><input type="text" name="_enclosure_url" size="80" value="" length="254"><br>
+<br><textarea name="_text" rows="$textentryrows" cols="$textentrycols" wrap="physical"></textarea>
+<br>
+Format with: <select name="_texttype">
+<flutterbyquery sql="SELECT id AS texttype_id, name AS texttype_name FROM texttypes">
+<flutterbyrow><option value="$texttype_id">$texttype_name</option></flutterbyrow>
+</flutterbyquery>
+</select>
+<input type="submit" name="_updateentry" value="Add Entry"></p></form>
+
+<hr>
+<p>Connectivity provided by <a href="http://www.highertech.net/">highertech.net</a>
+, awesome
+bandwidth, well away from fault lines and other potential for natural
+disasters, reliable, and run by cool people.</p>
+
+<p>Questions, comments, flames: contact <a href="mailto:webmaster@flutterby.com">Dan Lyke</a>
+</p>
+<p>Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.</p>
+
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+  <head>
+   <style type="text/css">
+	@import "/fcms.css";
+   </style>
+   <link rel="icon" href="/favicon.ico" type="image/ico">
+   <link rel="shortcut icon" href="/favicon.ico">
+    <title>$fcmsweblog_title: Login or Create New Account</title>
+  </head>
+<body class="flutterbybodystandard">
+<div id="subpagebanner">
+   <h1><a href="/">$fcmsweblog_title</a>: Login or Create User Account
+   </h1>
+</div>
+
+<div style="float: right; width: 25%">
+<h2>Why you should create an account</h2>
+
+<p>Many web pages allow you to enter comments without creating an
+account. We want you to create an account for a few reasons:</p>
+
+<ul>
+<li>This way, nobody else can impersonate you in conversations.</li>
+<li>We can let you edit your comments to correct mis-spellings and add
+information (although others will still be able to see the history of
+your comments, so don't think you're home free).</li> <li>We do
+attempt a little social engineering, tracking your participation in
+the community and restricting access to people who want to be a part
+of it is easier if you have an account.</li>
+</ul>
+
+<h2>Regarding your email address:</h2>
+
+<p>Feel totally free to not give us your email address. If you enter
+it, we'll safeguard it as best we can, and only use it in a few
+situations:</p>
+
+<ul>
+<li>If you forget your password.</li>
+
+<li>If one of the people running the system notices something that
+needs clarification from you. This can be anything from "Hey, can you
+follow up on your comment on..." to "we noticed you discovered a
+bug...".</li>
+
+<li>If you go to your <a href="/archives/userinfo.cgi">User
+Information</a> screen and tell us it's okay to publish your email in
+additional places, such as the <a
+href="news://www.flutterby.com/flutterby">NNTP syndication
+feed</a>.</li>
+
+<li>As a login to the news server, if you choose to use it.</li>
+
+<li>The default will <em>alwys</em> be to safeguard your information,
+and you can always give it to us later if you decide to trust us with
+it.</li>
+
+</ul>
+
+<p>(Huh, after all that I can't come up with too many good ideas as to
+why you <em>would</em> share your email address. No worries, your
+call.)</p>
+</div>
+
+
+<div>
+<p style="align: right; margin-left:
+96px;"><strong>$failurereason</strong> You must have a user account
+and be logged in to do continue. No data has been lost, if you create
+an account here or successfully log-in you will continue your
+action.</p>
+
+<h2>Are you returning from a previous visit?</h2>
+
+<form id="userloginform" method="post" action="logincomplete">
+<table>
+<tr><th>your name? </th>
+<td><input type="text" name="!user" value=""></td></tr>
+<tr><th>and password? </th>
+<td><input type="password" name="!pass" value=""></td></tr>
+<tr><th>I'm the only one who ever uses this computer so remember me forever</th>
+<td><input type="checkbox" name="!remember" value="1"></td></tr>
+<tr id="userloginformsubmit"><td colspan="2"><input type="submit" name="go" value="login"></td></tr>
+</table>
+</form>
+<h2>do you have a <a href="http://lid.netmesh.org/">LID<sup>tm</sup></a> url?</h2>
+<form method="post" action="lidvalidate.cgi">
+<input type="hidden" name="target" value="$lid_target">
+<input type="hidden" name="ticket" value="$lid_ticket">
+<input type="text" name="lid_url" value="" length="512">
+<input type="submit" name="go" value="login">
+</form>
+
+<h2>or is this your first visit?</h2>
+
+<form id="userregform" method="post" action="logincomplete">
+<table>
+<tr><th>Your name (can have spaces)?</th>
+<td><input type="text" name="!user" value=""></td></tr>
+<tr><th>and choose a password?</th>
+<td><input type="password" name="!pass1" value=""></td></tr>
+<tr><th>again to be sure?</th>
+<td><input type="password" name="!pass2" value=""></td></tr>
+<tr><th>I'm the only one who ever uses this computer so remember me forever</th>
+<td><input type="checkbox" name="!remember" value="1"><br></td></tr>
+<tr><th>and your email address? (optional, used for lost passwords and login to the news server. See the "why you shouldn't give it to us" over there on the right)</th>
+<td><input type="text" name="!email" value=""></td></tr>
+<tr id="userregformsubmit"><td colspan="2"><input type="submit" name="go" value="create an account"></td></tr>
+</table>
+</form>
+
+
+</div>
+
+
+<div style="clear:right">
+<hr>
+<p>Connectivity provided by <a href="http://www.highertech.net/">highertech.net</a>, awesome
+bandwidth, well away from fault lines and other potential for natural
+disasters, reliable, and run by cool people.</p>
+
+<p>Questions, comments, flames: contact <a href="mailto:webmaster@flutterby.com">Dan Lyke</a>
+</p>
+
+<p>Flutterby&trade; is a trademark claimed by <address><a href="mailto:danlyke@flutterby.com">Dan Lyke</a></address> for the web publications at <a href="http://www.flutterby.com/">www.flutterby.com</a> and <a href="http://www.flutterby.net">www.flutterby.net</a>.</p>
+
+
+</div>
+
+
+
+
+
+</body>
+</html>
